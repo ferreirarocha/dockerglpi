@@ -29,6 +29,7 @@ RUN apt update  && apt  install \
 	snmp \
 	nano \
 	wget \
+	cron \
 	vim  -y
 
 
@@ -50,16 +51,14 @@ RUN printf '<VirtualHost *:80>\n\
 
 
 
-RUN         a2enconf glpi.conf &&         echo "*/5 * * * * /usr/bin/php /var/www/html/glpi/front/cron.php &>/dev/null" >> /etc/cron
-#
-## Definindo a porta de acesso ao serviço
-EXPOSE 80
-
+RUN	a2enconf glpi.conf
+RUN	echo "*/5 * * * * /usr/bin/php /var/www/html/glpi/front/cron.php &>/dev/null"  > /var/spool/cron/crontabs/root
 ##  Criando script para executar o apache, mariaDB e o bash no boot do container
 RUN echo ' \n#!/bin/bash \n/etc/init.d/mysql start \n/etc/init.d/apache2 start \n/bin/bash' > /usr/bin/glpi
-
 RUN chmod +x /usr/bin/glpi
 
+## Definindo a porta de acesso ao serviço
+EXPOSE 80
 
 
 ADD  https://github.com/glpi-project/glpi/releases/download/9.2.2/glpi-9.2.2.tgz  ./
