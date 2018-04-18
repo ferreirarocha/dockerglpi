@@ -5,7 +5,8 @@ ENV GLPI_VERSION 9.2.2
                                                       
 ENV PATH="/opt/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
             
-RUN apt update  && apt  install 	php7.0 	\
+RUN apt update  && apt  install \
+ 	php7.0 	\
 	php7.0-xml \
 	php7.0-bcmath \ 
 	php7.0-imap \ 
@@ -22,19 +23,32 @@ RUN apt update  && apt  install 	php7.0 	\
 	php7.0-mysql 	\
 	php-dev 	\
 	php-pear 	\
-	libmariadbd18 \ 
-	libmariadbd-dev \ 
-	mariadb-client\
-	apache2  -y
-
-## Utilitários
-RUN apt install unzip curl snmp nano wget vim  -y
+	apache2 \
+	unzip \
+	curl \
+	snmp \
+	nano \
+	wget \
+	vim  -y
 
 
 RUN 	echo "no" | pecl install apcu_bc-beta  && 	echo "[apcu]\nextension=apcu.so\nextension=apc.so\n\napc.enabled=1" > /etc/php/7.0/apache2/php.ini  
 
-## Config Apache
-COPY glpi.conf /etc/apache2/conf-available/
+
+RUN printf '<VirtualHost *:80>\n\
+	DocumentRoot /var/www/html/glpi\n\
+	<Directory /var/www/html/glpi>\n\
+	AllowOverride All \n\
+	Order Allow,Deny\n\
+	Allow from all \n\
+	</Directory> \n\
+	ErrorLog /var/log/apache2/error-glpi.log\n\
+	LogLevel warn \n\
+	CustomLog /var/log/apache2/access-glpi.log combined \n\
+</VirtualHost> '\
+>> /etc/apache2/conf-available/glpi.conf
+
+
 
 RUN         a2enconf glpi.conf &&         echo "*/5 * * * * /usr/bin/php /var/www/html/glpi/front/cron.php &>/dev/null" >> /etc/cron
 #
@@ -54,6 +68,11 @@ ADD  https://forge.glpi-project.org/attachments/download/2216/GLPI-dashboard_plu
 RUN	tar -xzf  glpi-9.2.2.tgz -C /var/www/html  && 	tar xfz GLPI-dashboard_plugin-0.9.0_GLPI-9.2.x.tar.gz -C  /var/www/html/glpi/plugins/ 	&& chmod 775 -Rf /var/www/html/glpi  	&& chown www-data. -Rf /var/www/html/glpi
 
 
+
 ## Definindo o scrit para executar no boot do container
 CMD /usr/bin/glpi
  
+#CMD ["/usr/sbin/apachectl", "-DFOREGROUND"]
+
+CMD ["-D", "FOREGROUND"]
+ENTRYPOINT ["apachectl"]
