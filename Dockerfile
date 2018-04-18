@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Marcos Ferreira da Rocha <marcos.fr.rocha@gmail.com>
+LABEL maintainer="marcos.fr.rocha@gmail.com"
 
 ENV GLPI_VERSION 9.2.2
                                                       
@@ -63,7 +63,6 @@ EXPOSE 80
 
 ADD  https://github.com/glpi-project/glpi/releases/download/9.2.2/glpi-9.2.2.tgz  ./
 ADD  https://forge.glpi-project.org/attachments/download/2216/GLPI-dashboard_plugin-0.9.0_GLPI-9.2.x.tar.gz ./
-#COPY	glpi-9.2.2.tgz ./
 RUN	tar -xzf  glpi-9.2.2.tgz -C /var/www/html  && 	tar xfz GLPI-dashboard_plugin-0.9.0_GLPI-9.2.x.tar.gz -C  /var/www/html/glpi/plugins/ 	&& chmod 775 -Rf /var/www/html/glpi  	&& chown www-data. -Rf /var/www/html/glpi
 
 
