@@ -31,7 +31,7 @@ sudo docker volume create configdatabase
 **Executando o container**
 
 ```bash
-docker container run -it --restart=always --name glpiproducao -d -v wwwglpi:/var/www/html -v configdatabase:/etc/mysql/conf.d  -p 192.168.50.100:80:80 ferreirarocha/glpi:9.2.2
+docker container run  --restart always --name glpiproducao -d -v wwwglpi:/var/www/html -v configdatabase:/etc/mysql/conf.d  -p 192.168.50.100:80:80 ferreirarocha/glpi:9.2.2
 ```
 
 
