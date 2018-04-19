@@ -31,6 +31,7 @@ RUN apt update  && apt  install \
 	wget \
 	cron \
 	vim  -y
+	&& rm -rf /var/lib/apt/lists/*
 
 
 RUN 	echo "no" | pecl install apcu_bc-beta  && 	echo "[apcu]\nextension=apcu.so\nextension=apc.so\n\napc.enabled=1" > /etc/php/7.0/apache2/php.ini  
