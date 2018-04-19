@@ -5,7 +5,7 @@ ENV GLPI_VERSION 9.2.2
                                                       
 ENV PATH="/opt/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
             
-RUN apt update  && apt  install \
+RUN apt update  && apt  install -y \
  	php7.0 	\
 	php7.0-xml \
 	php7.0-bcmath \ 
@@ -30,8 +30,8 @@ RUN apt update  && apt  install \
 	nano \
 	wget \
 	cron \
-	vim  -y
-	&& rm -rf /var/lib/apt/lists/*
+	vim   \
+&& rm -rf /var/lib/apt/lists/*
 
 
 RUN 	echo "no" | pecl install apcu_bc-beta  && 	echo "[apcu]\nextension=apcu.so\nextension=apc.so\n\napc.enabled=1" > /etc/php/7.0/apache2/php.ini  
